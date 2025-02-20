@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   usv_gazebo
 )
 
+
 catkin_package()
 
 # Instalar archivos de launch y scripts

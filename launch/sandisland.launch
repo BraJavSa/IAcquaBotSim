@@ -75,7 +75,7 @@
               -R $(arg R) -P $(arg P) -Y $(arg Y)
               --urdf $(arg urdf) --model wamv"/>
 
-    <node name="world2body" pkg="usv_sim" type="world2body.py" output="screen"/>
+    <node name="world2body" pkg="IAqcuaBotSim" type="world2body.py" output="screen"/>
     <!--node name="cmd_update" pkg="usv_sim" type="cmd_update.py" output="screen"/-->
     <node name="thruster_control" pkg="usv_sim" type="signal_callback.py" output="screen"/>
 
