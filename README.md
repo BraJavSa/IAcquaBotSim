@@ -49,7 +49,7 @@ then close all terminals and open one again
     catkin_make
     echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
     cd ~/catkin_ws/src
-    
+    git clone https://github.com/BraJavSa/IAcquaBotSim.git
     git clone https://github.com/BraJavSa/hector-quadrotor-noetic.git
     git clone https://github.com/BraJavSa/px4_offboard_control.git
     git clone https://github.com/BraJavSa/usv_sim.git
