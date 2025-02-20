@@ -7,13 +7,10 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   sensor_msgs
   gazebo_ros
+  usv_description
+  usv_gazebo
 )
 
-# Añadir subdirectorios para los subpaquetes
-add_subdirectory(submodules/usv_gazebo)
-add_subdirectory(submodules/usv_description)
-
-# Definir el paquete y sus archivos de instalación
 catkin_package()
 
 # Instalar archivos de launch y scripts
@@ -24,4 +21,8 @@ install(DIRECTORY launch/
 install(PROGRAMS
   scripts/mi_script.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+include_directories(
+  ${catkin_INCLUDE_DIRS}
 )
