@@ -3,25 +3,21 @@
   <name>IAcquaBotSim</name>
   <version>0.0.1</version>
   <description>The IAcquaBotSim package</description>
-
-  <maintainer email="you@example.com">Your Name</maintainer>
-
+  <maintainer email="brayanjavsa@gmail.com">Brayan Saldarriaga</maintainer>
   <license>BSD</license>
-
   <buildtool_depend>catkin</buildtool_depend>
-
-  <build_depend>usv_description</build_depend>
-  <build_depend>usv_gazebo</build_depend>
-  <exec_depend>usv_description</exec_depend>
-  <exec_depend>usv_gazebo</exec_depend>
-  <depend>rospy</depend>
-  <depend>std_msgs</depend>
-  <depend>sensor_msgs</depend>
-  <depend>gazebo_ros</depend>
-<build_depend>xacro</build_depend>
-<exec_depend>xacro</exec_depend>
-
-
-  <export>
-  </export>
+  <build_depend>rospy</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>gazebo_ros</build_depend>
+  <build_depend>xacro</build_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>gazebo_ros</exec_depend>
+  <exec_depend>xacro</exec_depend>
+  <depend>usv_gazebo</depend>
+  <depend>usv_description</depend>
+  <export></export>
 </package>
+

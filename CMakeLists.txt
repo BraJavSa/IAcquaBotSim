@@ -1,20 +1,21 @@
 cmake_minimum_required(VERSION 3.5)
 project(IAcquaBotSim)
 
-# Buscar dependencias principales
 find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   sensor_msgs
   gazebo_ros
-  usv_description
-  usv_gazebo
+  xacro
 )
 
+add_subdirectory(submodules/usv_description)
+add_subdirectory(submodules/usv_gazebo)
 
-catkin_package()
+catkin_package(
+  CATKIN_DEPENDS rospy std_msgs sensor_msgs gazebo_ros xacro
+)
 
-# Instalar archivos de launch y scripts
 install(DIRECTORY launch/
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
 )
@@ -27,3 +28,4 @@ install(PROGRAMS
 include_directories(
   ${catkin_INCLUDE_DIRS}
 )
+
