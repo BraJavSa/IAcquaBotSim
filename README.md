@@ -20,37 +20,36 @@ then close all terminals and open one again
 
 
 ## Install SIMULATOR
+follow this link for install joy-ros http://wiki.ros.org/joy/Tutorials/ConfiguringALinuxJoystick
 
-    follow this link for install joy-ros http://wiki.ros.org/joy/Tutorials/ConfiguringALinuxJoystick
-
-    ```
-    sudo apt-get install ros-noetic-gazebo-ros-pkgs ros-noetic-gazebo-ros-control
-    sudo apt-get install ros-noetic-hector-gazebo-plugins
-    sudo apt-get install -y libgazebo11-dev
-    mkdir -p ~/catkin_ws/src
-    cd ~/catkin_ws/src
-    sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -sc` main" > /etc/apt/sources.list.d/ros-latest.list
-    wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
-    sudo apt-get update
-    sudo apt-get install python3-catkin-tools
-    cd
-    source .bashrc
-    catkin_init_workspace
-    cd ~/catkin_ws
-    catkin_make
-    echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
-    cd ~/catkin_ws/src
-    git clone https://github.com/BraJavSa/iacquabotsim.git
-    git clone https://github.com/BraJavSa/hector-quadrotor-noetic.git
-    git clone https://github.com/ros-simulation/gazebo_ros_pkgs.git
-    git clone -b gazebo_classic https://github.com/BraJavSa/vrx.git
-    cd ~/catkin_ws
-    catkin_make
-    ```
+  ```
+  sudo apt-get install ros-noetic-gazebo-ros-pkgs ros-noetic-gazebo-ros-control
+  sudo apt-get install ros-noetic-hector-gazebo-plugins
+  sudo apt-get install -y libgazebo11-dev
+  mkdir -p ~/catkin_ws/src
+  cd ~/catkin_ws/src
+  sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -sc` main" > /etc/apt/sources.list.d/ros-latest.list
+  wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
+  sudo apt-get update
+  sudo apt-get install python3-catkin-tools
+  cd
+  source .bashrc
+  catkin_init_workspace
+  cd ~/catkin_ws
+  catkin_make
+  echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
+  cd ~/catkin_ws/src
+  git clone https://github.com/BraJavSa/iacquabotsim.git
+  git clone https://github.com/BraJavSa/hector-quadrotor-noetic.git
+  git clone https://github.com/ros-simulation/gazebo_ros_pkgs.git
+  git clone -b gazebo_classic https://github.com/BraJavSa/vrx.git
+  cd ~/catkin_ws
+  catkin_make
+  ```
 ## run SIMULATOR
 
 
-    ```
-    roslaunch iacquabot sandisland.launch
-    ```
+  ```
+  roslaunch iacquabot sandisland.launch
+  ```
 
