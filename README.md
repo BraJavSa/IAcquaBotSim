@@ -19,15 +19,6 @@ The IAcquaBotSim is a digital twin of the real USV developed by the National Uni
 then close all terminals and open one again 
 
 
-## Install MAVROS
-  
-  ```
-  sudo apt-get install ros-noetic-mavros ros-noetic-mavros-extras
-  wget https://raw.githubusercontent.com/mavlink/mavros/master/mavros/scripts/install_geographiclib_datasets.sh
-  sudo bash ./install_geographiclib_datasets.sh 
-  
-  ```
-
 ## Install SIMULATOR
 
     follow this link for install joy-ros http://wiki.ros.org/joy/Tutorials/ConfiguringALinuxJoystick
@@ -49,22 +40,17 @@ then close all terminals and open one again
     catkin_make
     echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
     cd ~/catkin_ws/src
-    git clone https://github.com/BraJavSa/IAcquaBotSim.git
+    git clone https://github.com/BraJavSa/iacquabotsim.git
     git clone https://github.com/BraJavSa/hector-quadrotor-noetic.git
-    git clone https://github.com/BraJavSa/px4_offboard_control.git
-    git clone https://github.com/BraJavSa/usv_sim.git
     git clone https://github.com/ros-simulation/gazebo_ros_pkgs.git
     git clone -b gazebo_classic https://github.com/BraJavSa/vrx.git
     cd ~/catkin_ws
-    echo "export ROS_PACKAGE_PATH=\$ROS_PACKAGE_PATH:~/catkin_ws/src/IAcquaBotSim/submodules/usv_description" >> ~/.bashrc
-    echo "export ROS_PACKAGE_PATH=\$ROS_PACKAGE_PATH:~/catkin_ws/src/IAcquaBotSim/submodules/usv_gazebo" >> ~/.bashrc
-    source ~/.bashrc
     catkin_make
     ```
 ## run SIMULATOR
 
 
     ```
-    roslaunch IAcquabot sandisland.launch
+    roslaunch iacquabot sandisland.launch
     ```
 
