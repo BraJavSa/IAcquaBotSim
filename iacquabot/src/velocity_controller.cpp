@@ -18,20 +18,28 @@ class VelocityController {
             signals_pub = nh.advertise<std_msgs::Float32MultiArray>("/wamv/signals", 10);
             
             ts = 0.02;
+            delta_1 = 131.406041018019408284089877270162L;
+            delta_2 = 68.453244108018850511143682524562L;
+            delta_3 = -0.536708819202315723373430955689L;
+            delta_4 = 375.339840138962301807623589411378L;
+            delta_5 = 68.570497467399988522629428189248L;
+            delta_6 = 57.462687228812114881293382495642L;
+            delta_7 = 11.107810238586326434528928075451L;
+            delta_8 = 200.805889034405169013552949763834L;
+            delta_9 = 265.054751383781422191532328724861L;
+            delta_10 = 0.872524872563773867817360496701L;
+            delta_11 = 255.400197330558313524306868202984L;
             
             // Matrices constantes extraídas del archivo .mat
-            M << 124.06341590941475772069679806008934974670410156250000L, 0, 0,
-                 0, 97.92262592424116007805423578247427940368652343750000L, 24.00184800122566031177484546788036823272705078125000L,
-                 0, 24.00184800122566031177484546788036823272705078125000L, 1024.58806252811655213008634746074676513671875000000000L;
+            M << delta_1, 0, 0,
+                 0, delta_2, delta_3,
+                 0, delta_3, delta_4;
             
-            D << 209.70818898859158707637106999754905700683593750000000L, 0, 0,
-                 0, 24.99277753884350872226605133619159460067749023437500L, 1.37435567888283838300367278861813247203826904296875L,
-                 0, 1.37435567888283838300367278861813247203826904296875L, 795.58440621527017810876714065670967102050781250000000L;
+            D << delta_8, 0, 0,
+                 0, delta_9, delta_10,
+                 0, delta_10, delta_11;
             
-            delta_3 = 24.00184800122566031177484546788036823272705078125000L;
-            delta_5 = 62.97028138546249920182162895798683166503906250000000L;
-            delta_6 = 33.94332221913634839438600465655326843261718750000000L;
-            delta_7 = 29.02695916632567119108898623380810022354125976562500L;
+            
     
             // Define diferentes valores de k_d para cada componente
             k_d << 30.0L, 80.0L, 50.0L;  // Por ejemplo, puedes asignar diferentes valores para cada fila
@@ -132,7 +140,7 @@ class VelocityController {
         Eigen::Matrix<long double, 3, 1> k_d;  // Vector k_d de 3 componentes
         Eigen::Matrix<long double, 3, 1> desired_velocity, prev_desired_velocity, acceleration_desired, actual_velocity;
         Eigen::Matrix<long double, 3, 3> M, D;
-        long double delta_3, delta_5, delta_6, delta_7;
+        long double delta_1, delta_2, delta_3,delta_4, delta_5, delta_6, delta_7, delta_8, delta_9, delta_10, delta_11;
     };
 
 int main(int argc, char** argv) {
