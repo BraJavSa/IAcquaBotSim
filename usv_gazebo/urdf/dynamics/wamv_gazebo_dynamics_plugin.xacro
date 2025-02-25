@@ -13,19 +13,20 @@
         <yDotV>0.0</yDotV>
         <nDotR>0.0</nDotR>
         <!-- Linear and quadratic drag -->
-        <xU>795.3</xU>
+        <xU>380.0</xU>
         <xUU>0.0</xUU>
-        <yV>800.0</yV>
+        <yV>400.0</yV>
         <yVV>0.0</yVV>
-        <zW>500.0</zW>
+        <zW>600.0</zW>
         <kP>50.0</kP>
         <mQ>50.0</mQ>
         <nR>100.0</nR>
-        <nRR>0.0</nRR>
+        <nRR>10.0</nRR>
         <!-- mejorar aqui -->
         <!-- General dimensions -->
         <!--<boatArea>2.2</boatArea>-->
         <hullRadius>0.213</hullRadius>
+
         <boatWidth>${width}</boatWidth>
         <boatLength>${length}</boatLength>
         <!-- Length discretization, AKA, "N" -->

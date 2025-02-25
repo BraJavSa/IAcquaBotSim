@@ -71,8 +71,8 @@
     </visual-->
 
     <inertial>
-      <mass value="20.0"/>
-      <inertia ixx="120.0" ixy="0.0" ixz="0.0" iyy="120" iyz="0.0" izz="446.0"/>
+      <mass value="24.0"/>
+      <inertia ixx="120.0" ixy="0.0" ixz="0.0" iyy="125.0" iyz="0.0" izz="120.0"/>
       <!--inertia ixx="120.0" ixy="0.0" ixz="0.0" iyy="393" iyz="0.0" izz="446.0"/-->
     </inertial>
   </link>
