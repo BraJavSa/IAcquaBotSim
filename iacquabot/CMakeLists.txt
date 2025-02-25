@@ -20,9 +20,13 @@ catkin_package(
 
 # Crear el ejecutable
 add_executable(velocity_controller src/velocity_controller.cpp)
+add_executable(position_controller src/position_controller.cpp)
 
 # Vincular el ejecutable con las bibliotecas necesarias
 target_link_libraries(velocity_controller
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(position_controller
   ${catkin_LIBRARIES}
 )
 
