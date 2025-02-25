@@ -44,7 +44,7 @@
       <axis rpy="0 0 0" xyz="1 0 0"/>
       <parent link="${namespace}/${prefix}_engine_link"/>
       <child link="${namespace}/${prefix}_propeller_link"/>
-      <origin rpy="0 0 0" xyz="-0.278156 0 -0.509371"/>
+      <origin rpy="0 0 0" xyz="0 0 -0.509371"/>
       <limit effort="100" velocity="100" />
       <dynamics friction="0.05" damping="0.05" />
     </joint>
