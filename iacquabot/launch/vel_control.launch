@@ -78,7 +78,6 @@
 
     <node name="world2body" pkg="iacquabot" type="world2body.py" output="screen"/>
     <node name="thruster_control" pkg="iacquabot" type="signal_callback.py" output="screen"/>
-    <node name="cmd_vel_republisher" pkg="iacquabot" type="cmd_vel_republisher.py" output="screen"/>
     <node name="velocity_controller" pkg="iacquabot" type="velocity_controller" output="screen"/>
 </launch>
 

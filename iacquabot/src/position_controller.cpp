@@ -13,21 +13,21 @@ class PositionController {
 public:
     PositionController() {
         ros::NodeHandle nh;
-        pos_sub = nh.subscribe("/desired_position", 10, &PositionController::callbackPosDeseada, this);
+        pos_sub = nh.subscribe("/iacquabot/desired_position", 10, &PositionController::callbackPosDeseada, this);
         odom_sub = nh.subscribe("/boat/odom", 10, &PositionController::callbackPosActual, this);
         vel_pub = nh.advertise<geometry_msgs::Twist>("/iacquabot/cmd_vel", 10);
 
-        k_p = 1.0; // Ganancia proporcional para la velocidad lineal
-        k_theta = 1.0; // Ganancia proporcional para la velocidad angular
-        u_max = 3.0; // Velocidad máxima en m/s
-        w_max = 3.0; // Velocidad máxima en rad/s
+        k_p = 1.0;
+        k_theta = 1.0;
+        u_max = 3.0;
+        w_max = 3.0;
         actual_position.setZero();
+        desired_position.setZero();
         actual_theta = 0.0;
     }
 
     void callbackPosDeseada(const geometry_msgs::Pose::ConstPtr& msg) {
         desired_position << msg->position.x, msg->position.y;
-        computeControl();
     }
 
     void callbackPosActual(const nav_msgs::Odometry::ConstPtr& msg) {
@@ -43,9 +43,7 @@ public:
         Eigen::Vector2d error = desired_position - actual_position;
         double error_norm = error.norm();
     
-        // Verificar si el error es menor a 0.3
         if (error_norm < 0.15) {
-            // Si el error es menor a 0.3, las velocidades son 0
             publishVelocity(0.0, 0.0);
             return;
         }
@@ -55,7 +53,6 @@ public:
         double u = k_p * error.norm();
         double w = k_theta * e_theta;
         
-        // Saturamos u y w
         u = std::max(-u_max, std::min(u_max, u));
         w = std::max(-w_max, std::min(w_max, w));
         
@@ -70,14 +67,18 @@ public:
     }
 
     void run() {
-        ros::spin();
+        ros::Rate rate(50);
+        while (ros::ok()) {
+            ros::spinOnce();
+            computeControl();
+            rate.sleep();
+        }
     }
 
 private:
     ros::Subscriber pos_sub, odom_sub;
     ros::Publisher vel_pub;
-    Eigen::Vector2d desired_position;
-    Eigen::Vector2d actual_position;
+    Eigen::Vector2d desired_position, actual_position;
     double actual_theta;
     double k_p, k_theta;
     double u_max, w_max;
