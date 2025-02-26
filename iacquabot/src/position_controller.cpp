@@ -1,10 +1,13 @@
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
-#include <geometry_msgs/Pose.h>  // Incluimos este encabezado para Pose
+#include <geometry_msgs/Pose.h>
 #include <Eigen/Dense>
 #include <cmath>
 #include <iostream>
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf2/LinearMath/Matrix3x3.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
 class PositionController {
 public:
@@ -12,36 +15,57 @@ public:
         ros::NodeHandle nh;
         pos_sub = nh.subscribe("/desired_position", 10, &PositionController::callbackPosDeseada, this);
         odom_sub = nh.subscribe("/boat/odom", 10, &PositionController::callbackPosActual, this);
-        vel_pub = nh.advertise<geometry_msgs::Twist>("/cmd_vel", 10);
+        vel_pub = nh.advertise<geometry_msgs::Twist>("/iacquabot/cmd_vel", 10);
 
-        ts = 0.02; // Intervalo de tiempo en segundos
-        k_p << 10.0, 10.0, 10.0;  // Ganancia proporcional para cada eje
-
-        prev_pos_deseada.setZero(); // Inicializamos la posición deseada pasada en cero
+        k_p = 1.0; // Ganancia proporcional para la velocidad lineal
+        k_theta = 1.0; // Ganancia proporcional para la velocidad angular
+        u_max = 3.0; // Velocidad máxima en m/s
+        w_max = 3.0; // Velocidad máxima en rad/s
+        actual_position.setZero();
+        actual_theta = 0.0;
     }
 
     void callbackPosDeseada(const geometry_msgs::Pose::ConstPtr& msg) {
-        // Extraemos la posición deseada desde el mensaje de tipo Pose
-        desired_position << msg->position.x, msg->position.y, 0;  // Suponemos que no hay componente Z
-
-        // Calculamos la velocidad deseada utilizando la fórmula indicada
-        desired_velocity = (desired_position - prev_pos_deseada) / ts + k_p.cwiseProduct(actual_position - desired_position);
-        
-        prev_pos_deseada = desired_position;  // Actualizamos la posición deseada pasada
-        publishVelocity();
+        desired_position << msg->position.x, msg->position.y;
+        computeControl();
     }
 
     void callbackPosActual(const nav_msgs::Odometry::ConstPtr& msg) {
-        // Obtenemos la posición actual del vehículo desde el Odometry
-        actual_position << msg->pose.pose.position.x, msg->pose.pose.position.y, 0;  // Suponemos que no tenemos Z en la odometría
+        actual_position << msg->pose.pose.position.x, msg->pose.pose.position.y;
+        tf2::Quaternion q;
+        tf2::fromMsg(msg->pose.pose.orientation, q);
+        tf2::Matrix3x3 m(q);
+        double roll, pitch;
+        m.getRPY(roll, pitch, actual_theta);
     }
 
-    void publishVelocity() {
-        geometry_msgs::Twist msg;
-        msg.linear.x = desired_velocity(0);
-        msg.linear.y = desired_velocity(1);
-        msg.angular.z = desired_velocity(2);
+    void computeControl() {
+        Eigen::Vector2d error = desired_position - actual_position;
+        double error_norm = error.norm();
+    
+        // Verificar si el error es menor a 0.3
+        if (error_norm < 0.15) {
+            // Si el error es menor a 0.3, las velocidades son 0
+            publishVelocity(0.0, 0.0);
+            return;
+        }
+        double theta_d = atan2(error.y(), error.x());
+        double e_theta = atan2(sin(theta_d - actual_theta), cos(theta_d - actual_theta));
+        
+        double u = k_p * error.norm();
+        double w = k_theta * e_theta;
+        
+        // Saturamos u y w
+        u = std::max(-u_max, std::min(u_max, u));
+        w = std::max(-w_max, std::min(w_max, w));
+        
+        publishVelocity(u, w);
+    }
 
+    void publishVelocity(double u, double w) {
+        geometry_msgs::Twist msg;
+        msg.linear.x = u;
+        msg.angular.z = w;
         vel_pub.publish(msg);
     }
 
@@ -52,10 +76,11 @@ public:
 private:
     ros::Subscriber pos_sub, odom_sub;
     ros::Publisher vel_pub;
-    long double ts;
-    Eigen::Matrix<long double, 3, 1> k_p;  // Vector de ganancias proporcionales
-    Eigen::Matrix<long double, 3, 1> desired_position, prev_pos_deseada;
-    Eigen::Matrix<long double, 3, 1> actual_position, desired_velocity;
+    Eigen::Vector2d desired_position;
+    Eigen::Vector2d actual_position;
+    double actual_theta;
+    double k_p, k_theta;
+    double u_max, w_max;
 };
 
 int main(int argc, char** argv) {
