@@ -80,6 +80,6 @@
     <node name="thruster_control" pkg="iacquabot" type="signal_callback.py" output="screen"/>
     <node name="velocity_controller" pkg="iacquabot" type="velocity_controller" output="screen"/>
     <node name="position_controller" pkg="iacquabot" type="position_controller" output="screen"/>
-    <!--node name="view_position" pkg="iacquabot" type="view_position.py" output="screen"/-->
+    <!--node name="trayectory_view" pkg="iacquabot" type="view_trayectory.py" output="screen"/-->
 </launch>
 

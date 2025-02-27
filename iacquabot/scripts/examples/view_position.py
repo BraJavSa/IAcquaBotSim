@@ -13,10 +13,12 @@ def callback(data):
 
         # Preparamos el estado del modelo para enviar
         model_state = ModelState()
+        rospy.loginfo("posicion recibida")
         model_state.model_name = 'red_totem'
 
-        # Actualizamos la posición del modelo con los datos de Pose recibidos
         model_state.pose = data  # Pose recibida del tópico
+        model_state.reference_frame = "world"  # Añadir esto
+
 
         # Usamos el servicio para actualizar la posición del modelo
         set_model_state(model_state)

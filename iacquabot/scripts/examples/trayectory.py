@@ -1,64 +1,73 @@
+import numpy as np
+import time
 import rospy
-from geometry_msgs.msg import Pose
-import math
+from nav_msgs.msg import Odometry
+from geometry_msgs.msg import Twist, Point
+from math import sin, cos, sqrt
 
-# Parámetros de la trayectoria
-width = 20.0  # Ancho del 8 en metros
-height = 40.0  # Alto del 8 en metros
-total_time = 80.0  # Tiempo total en segundos
-frequency = 50  # Frecuencia de publicación (50 Hz)
+class PositionController:
+    def __init__(self, fr=50, tf=60):
+        self.fr = fr
+        self.ts = 1 / fr
+        self.tf = tf
+        self.t = np.arange(0, tf + self.ts, self.ts)
+        
+        self.Xd = 80 * np.sin(0.04 * self.t)
+        self.Yd = 40 * np.sin(0.02 * self.t)
+        
+        self.Xdp = np.gradient(self.Xd, self.ts)
+        self.Ydp = np.gradient(self.Yd, self.ts)
+        
+        rospy.init_node('position_controller', anonymous=True)
+        self.odom_sub = rospy.Subscriber('/boat/odom', Odometry, self.odom_callback)
+        self.cmd_pub = rospy.Publisher('/iacquabot/cmd_vel', Twist, queue_size=10)
+        #self.desired_pos_pub = rospy.Publisher('/desired_position', Point, queue_size=10)  # Nuevo publisher
+        
+        self.Xr = 0
+        self.Yr = 0
+        self.psir = 0
 
-# Creamos un nodo ROS
-rospy.init_node('eight_trajectory_publisher')
+    def odom_callback(self, msg):
+        self.Xr = msg.pose.pose.position.x
+        self.Yr = msg.pose.pose.position.y
+        quaternion = msg.pose.pose.orientation
+        self.psir = self.quaternion_to_euler(quaternion.x, quaternion.y, quaternion.z, quaternion.w)
 
-# Publicador
-pub = rospy.Publisher('/iacquabot/desired_position', Pose, queue_size=10)
+    def quaternion_to_euler(self, x, y, z, w):
+        yaw = np.arctan2(2 * (w * z + x * y), 1 - 2 * (y * y + z * z))
+        return yaw
 
-# Calculamos el número de iteraciones (frecuencia * tiempo total)
-iterations = int(total_time * frequency)
+    def controller(self, Xd, Yd, Xdp, Ydp, Xr, Yr, psir):
+        xre = Xd - Xr
+        yre = Yd - Yr
+        vx = Xdp + xre
+        vy = Ydp + yre
+        vpsi = -(vx / 0.2) * sin(psir) + (vy / 0.2) * cos(psir)
+        Uref = vx * cos(psir) + vy * sin(psir)
+        Wref = vpsi
+        return Uref, Wref
+    
+    def send_velocity_commands(self, Uref, Wref):
+        cmd_msg = Twist()
+        cmd_msg.linear.x = Uref  
+        cmd_msg.angular.z = Wref  
+        self.cmd_pub.publish(cmd_msg) 
 
-# Variables para el control de la trayectoria
-center_y = height / 2
-center_x = width / 2
+    def send_desired_position(self, Xd, Yd):
+        pos_msg = Point()
+        pos_msg.x = Xd
+        pos_msg.y = Yd
+        pos_msg.z = 0  # Asumimos que la posición Z es constante (por ejemplo, 0)
+        self.desired_pos_pub.publish(pos_msg)  # Publicamos la posición deseada
 
-def generate_eight_trajectory(t):
-    # Parámetros de la trayectoria en forma de 8
-    # Senoide en forma de 8, dividida en dos partes para crear la forma
-    x = width * math.sin(math.pi * t / total_time)
-    y = center_y * math.sin(2 * math.pi * t / total_time)
+    def run(self):
+        for k in range(1, len(self.t)):
+            Xd, Yd = self.Xd[k], self.Yd[k]
+            Uref, Wref = self.controller(Xd, Yd, self.Xdp[k], self.Ydp[k], self.Xr, self.Yr, self.psir)   
+            self.send_velocity_commands(Uref, Wref)
+            #self.send_desired_position(Xd, Yd)  # Publicamos la posición deseada
+            time.sleep(self.ts)
 
-    return x, y
-
-def main():
-    rate = rospy.Rate(frequency)
-
-    for i in range(iterations):
-        # Calcular el tiempo normalizado (t / total_time)
-        t = i * total_time / iterations
-
-        # Generar la posición en la trayectoria
-        x, y = generate_eight_trajectory(t)
-
-        # Crear el mensaje Pose
-        pose = Pose()
-        pose.position.x = x
-        pose.position.y = y
-        pose.position.z = 0.8  # Asumimos que no hay movimiento en Z
-
-        # Orientación (si no se necesita, puede quedarse en 0)
-        pose.orientation.x = 0.0
-        pose.orientation.y = 0.0
-        pose.orientation.z = 0.0
-        pose.orientation.w = 1.0
-
-        # Publicar el mensaje
-        pub.publish(pose)
-
-        # Esperar para mantener la frecuencia deseada
-        rate.sleep()
-
-if __name__ == '__main__':
-    try:
-        main()
-    except rospy.ROSInterruptException:
-        pass
+if __name__ == "__main__":
+    controller = PositionController()
+    controller.run()
